@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
   glutReshapeFunc(Resize);
   
   //(03)
-  //glutIdleFunc(Idle);
+  glutIdleFunc(Idle);
 
  
   //Enter main event handling loop
