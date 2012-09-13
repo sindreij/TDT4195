@@ -15,6 +15,7 @@ float scale = 1;
 
 const float PI = 3.141592;
 
+//En liten enkel state-maskin i Idle
 int state = 0;
 
 const int STATE_ROTATE = 0;
@@ -38,11 +39,14 @@ void drawCircle(float cx, float cy, float r,
     float angle_res = 0.1;
     glBegin(GL_TRIANGLE_FAN);
         glVertex2f(cx, cy);
+        //Plotter ut alle punktene langs kanten av 
+        //sirkelen
         for (float angle = start_angle; angle<=end_angle; angle+= angle_res) {
             float x = cosf(angle) * r + cx;
             float y = sinf(angle) * r + cy;
             glVertex2f(x, y);
         }
+        //Avsluttende punkt for å få en komplett sirkel
         float x = cosf(end_angle) * r + cx;
         float y = sinf(end_angle) * r + cy;
         glVertex2f(x, y);
@@ -55,14 +59,26 @@ void drawRoundedRect(float x1, float y1, float x2, float y2, float border) {
     float top = max(y1, y2);
     float bottom = min(y1, y2);
 
+    //En rounded rect kan deles opp til å bestå av 9 deler. En
+    //hoved-boks, 4 hjørner og 4 kanter. Her tegner jeg dette
+
+    //Main box
     glRectf(left+border, bottom+border, right-border, top-border);
+    //Corner upper left
     drawCircle(left+border,  top-border,    border, PI/2, PI);
+    //Corner down left
     drawCircle(left+border,  bottom+border, border, PI, 3*PI/2);
+    //Corner up right
     drawCircle(right-border, top-border,    border, 0, PI/2);
+    //corner down right
     drawCircle(right-border, bottom+border, border, 3*PI/2, PI*2);
+    //Line left
     glRectf(left, top-border, left+border, bottom+border);
+    //Line bottom
     glRectf(left+border, bottom, right-border, bottom+border);
+    //Line right
     glRectf(right-border, top-border, right, bottom+border);
+    //Line top
     glRectf(left+border, top, right-border, top-border);
 }
 
@@ -82,82 +98,12 @@ void Render()
   glScalef(scale, scale, 0);
   glRotatef(angle, 0.0, 0.0, 1.0);
 
-  glColor3f(0, 0, 1.0f);
-  drawRoundedRect(-20, -20, 20, 20, 5);
+  glColor3f(0.15f, 0.15f, 1.0f);
+  drawRoundedRect(-20, -20, 20, 20, 10);
   glColor3f(1.0f, 1.0f, 1.0f);
-  glRectf(-10, -10, 10, 10);
-  glColor3f(0, 0, 1.0f);
-  drawCircle(0,0, 8, 0, 2*PI);
-
-//  DrawAxes();
-
-
-
-
-
-//  glRotatef(30.0, 0.0, 0.0, 1.0);
-//  glScalef(2.0, 1.0, 1.0);
-//  glTranslatef(30.0, 0.0, 0.0);
-//  glRotatef(angle, 0.0, 0.0, 1.0);
-
-//  glColor3f(1.0, 0.9, 0.0);						   // Set drawing colour = yellow
-//  glRectf(-10.0, -10.0, 15.0, 25.0);               // Draw a built-in primitive
-
-
-
-
-
-
-
-
-
-//// (01)
-//// (01a)
-    
-/*    glColor3f(0.2, 0.9, 0.2);
-    glPointSize(5);
-//  glBegin(GL_POINTS);
-//  glBegin(GL_LINES);
-//  glBegin(GL_LINE_STRIP);
-//  glBegin(GL_LINE_LOOP);
-//  glBegin(GL_TRIANGLES);
-//	glBegin(GL_TRIANGLE_FAN);
-	glVertex2f(10.0,20.0);
-	glVertex2f(-20.0,10.0);
-	glVertex2f(-15.0,-20.0);
-	glVertex2f(15.0,-30.0);
-	glVertex2f(35.0,-15.0);
-	glVertex2f(25.0,5.0);
-	glEnd();*/
-
-//// (01b)
-//  glBegin(GL_TRIANGLES);
-//  glBegin(GL_TRIANGLE_STRIP);
-/*	glVertex2f(10.0,20.0);
-	glVertex2f(-20.0,10.0);
-	glColor3f(0.9, 0.2, 0.2);
-	glVertex2f(25.0,5.0);
-	glColor3f(0.2, 0.9, 0.2);
-	glVertex2f(-15.0,-20.0);
-	glColor3f(0.2, 0.2, 0.9);
-	glVertex2f(35.0,-15.0);
-	glColor3f(0.9, 0.2, 0.9);
-	glVertex2f(15.0,-30.0);
-	
-	glEnd();*/
-
-//// (01c)
-/*
-    glPointSize(5);
-    glBegin(GL_TRIANGLES);
-    glColor3f(1.0, 0.0, 0.0);
-	glVertex2f(10.0,30.0);
-	glColor3f(0.0, 1.0, 0.0);
-	glVertex2f(-25.0,-30.0);
-	glColor3f(0.0, 0.0, 1.0);
-	glVertex2f(40.0,-25.0);
-	glEnd();
-*/
+  glRectf(-11, -11, 11, 11);
+  glColor3f(0.15f, 0.15f, 1.0f);
+  drawCircle(0,0, 9, 0, 2*PI);
 
 
   glutSwapBuffers();             // All drawing commands applied to the 
