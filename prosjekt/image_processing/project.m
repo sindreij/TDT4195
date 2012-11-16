@@ -41,15 +41,10 @@ for k = 1:length(B),
     % the length from the centroid)
 
     [phi, r] = cart2pol(b(:,2)-cx, b(:,1)-cy);
-    %figure();
     
-    [max_r, max_index] = max(r);
-    my = b(max_index,1);
-    mx = b(max_index,2);
-    %I2(my, mx) = 1.0;
-
-    m = [1,2,3,2,1];
-    m = m/sum(m);
+    %Utkommentert filter som ikke trengtes
+    %m = [1,2,3,2,1];
+    %m = m/sum(m);
     %r = filter(m,1, r);
 
     %figure();
@@ -60,8 +55,6 @@ for k = 1:length(B),
     max_r = max(r);
     min_r = min(r);
     if !(max_r/min_r < sqrt(2))
-        diff = max_r-min_r;
-
         corner_indexes = find(r>max_r-max_r*0.10==1);
         corner_indexes;
 
@@ -72,29 +65,46 @@ for k = 1:length(B),
         end
         indexes = [];
         found = [];
+        first = true;
+        corner_indexes;
+
+        
         for i = 1:length(corner_indexes)
             index = corner_indexes(i);
-            if (!(last == index-1)) || last == -200
-                indexes = [indexes ; index];
-            end
-            %if last == index-1 || last == -200
-            %    found = [found ; index];
-            %else
-            %    if length(found) > 0
-            %        indexes = [indexes ; floor(median(found))];
-            %    end
-            %    found = [index];
+            %if (!(last == index-1)) || last == -200
+            %    indexes = [indexes ; index];
             %end
+            if last == index-1 || last == -200
+                found = [found ; index];
+            else
+                if length(found) > 0
+                    indexes = [indexes ; floor(median(found))];
+                end
+                found = [index];
+            end
             last = index;
         end
-        corners = b(indexes,:);
-        %if length(found) > 0    
-        %    indexes = [indexes ; floor(median(found))];
-        %    indexes;
-        %    
-        %else
-        %    corners = [];
-        %end
+        %corners = b(indexes,:);
+        if length(found) > 0 
+            indexes = [indexes ; floor(median(found))];
+            one = indexes(1);
+            two = indexes(length(indexes));
+            one = one+length(b);
+            if abs((one - two) - (indexes(3) - indexes(2))) > length(b)*0.20
+                
+
+                med = floor((one+two)/2);
+                if med > length(b)
+                    med = med-length(b);
+                end
+                indexes(1) = med;
+                indexes = indexes(1:length(indexes)-1);
+            end
+
+            corners = b(indexes,:);
+        else
+            corners = [];
+        end
 
         [h w] = size(corners);
         for i = 1:h
@@ -129,4 +139,4 @@ writeAttributesToFile('result.txt', data);
 
 I2 = uint8(I2*255);
 
-imwrite(I2, 'result.bmp');
+imwrite(I2, 'result.png');
